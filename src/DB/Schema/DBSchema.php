@@ -13,12 +13,13 @@ use DBDiff\Diff\AlterTable;
 
 class DBSchema {
 
-    function __construct($manager) {
+    function __construct($manager, $params) {
         $this->manager = $manager;
+        $this->params = $params;
     }
-    
+
     function getDiff() {
-        $params = ParamsFactory::get();
+        $params = $this->params;
 
         $diffs = [];
 
@@ -36,7 +37,7 @@ class DBSchema {
         if ($sourceCharset !== $targetCharset) {
             $diffs[] = new SetDBCharset($dbName, $sourceCharset, $targetCharset);
         }
-        
+
         // Tables
         $tableSchema = new TableSchema($this->manager);
 

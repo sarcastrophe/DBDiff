@@ -8,17 +8,18 @@ use DBDiff\Logger;
 
 class DBData {
 
-    function __construct($manager) {
+    function __construct($manager, $params) {
         $this->manager = $manager;
+        $this->params = $params;
     }
-    
+
     function getDiff() {
-        $params = ParamsFactory::get();
+        $params = $this->params;
 
         $diffSequence = [];
 
         // Tables
-        $tableData = new TableData($this->manager);
+        $tableData = new TableData($this->manager, $this->params);
 
         $sourceTables = $this->manager->getTables('source');
         $targetTables = $this->manager->getTables('target');
