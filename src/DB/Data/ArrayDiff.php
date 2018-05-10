@@ -10,13 +10,14 @@ class ArrayDiff {
 
     public static $size = 1000;
 
-    function __construct($key, $dbiterator1, $dbiterator2) {
+    function __construct($key, $dbiterator1, $dbiterator2, $params) {
         $this->key = $key;
         $this->dbiterator1 = $dbiterator1;
         $this->dbiterator2 = $dbiterator2;
         $this->sourceBucket = [];
         $this->targetBucket = [];
         $this->diffBucket = [];
+        $this->params = $params;
     }
 
     public function getDiff($table) {
@@ -50,7 +51,7 @@ class ArrayDiff {
                 if ($this->isKeyEqual($entry1, $entry2)) {
 
                     // unset the fields to ignore
-                    $params = ParamsFactory::get();
+                    $params = $this->params;
                     if (isset($params->fieldsToIgnore[$table])) {
                         foreach ($params->fieldsToIgnore[$table] as $fieldToIgnore) {
                             unset($entry1[$fieldToIgnore]);

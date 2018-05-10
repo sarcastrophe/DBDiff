@@ -1,4 +1,5 @@
-<?php namespace DBDiff;
+<?php
+namespace DBDiff;
 
 use DBDiff\Params\ParamsFactory;
 use DBDiff\DB\DiffCalculator;
@@ -7,16 +8,22 @@ use DBDiff\Exceptions\BaseException;
 use DBDiff\Logger;
 use DBDiff\Templater;
 
-
+/**
+ * This is installed with @dev, commit is c001e9f09083e16998d0005a7e33a3432e7f083a June 2017
+ *
+ * Class DBDiff
+ * @package DBDiff
+ */
 class DBDiff {
-    
-    public function run() {
+
+    public function run($server1, $server2) {
 
         // Increase memory limit
         ini_set('memory_limit', '512M');
 
         try {
-            $params = ParamsFactory::get();
+
+            $params = ParamsFactory::get($server1, $server2);
 
             // Diff
             $diffCalculator = new DiffCalculator;
@@ -29,6 +36,7 @@ class DBDiff {
                 // SQL
                 $sqlGenerator = new SQLGenerator($diff);
                 $up =''; $down = '';
+                $params->include = "all";
                 if ($params->include !== 'down') {
                     $up = $sqlGenerator->getUp();
                 }
@@ -36,9 +44,10 @@ class DBDiff {
                     $down = $sqlGenerator->getDown();
                 }
 
-                // Generate
-                $templater = new Templater($params, $up, $down);
-                $templater->output();
+                // @todo configure
+                //$templater = new Templater($params, $up, $down);
+                //$templater->output();
+                return array("up" => $up, "down" => $down);
             }
 
             Logger::success("Completed");
